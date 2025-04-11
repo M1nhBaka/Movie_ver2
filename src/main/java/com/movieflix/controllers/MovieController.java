@@ -27,16 +27,11 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add-movie")
-    public ResponseEntity<MovieDTO> addMovieHandler(@RequestPart MultipartFile file,
-                                                    @RequestPart String movieDto) throws IOException, EmptyFileException {
+    public ResponseEntity<MovieDTO> addMovieHandler(@RequestBody String movieDto) throws IOException, EmptyFileException {
 
-        if (file.isEmpty()) {
-            throw new EmptyFileException("File is empty! Please send another file!");
-        }
         MovieDTO dto = convertToMovieDto(movieDto);
-        return new ResponseEntity<>(movieService.addMovie(dto, file), HttpStatus.CREATED);
+        return new ResponseEntity<>(movieService.addMovie(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{movieId}")
@@ -51,11 +46,9 @@ public class MovieController {
 
     @PutMapping("/update/{movieId}")
     public ResponseEntity<MovieDTO> updateMovieHandler(@PathVariable Integer movieId,
-                                                       @RequestPart(required = false) MultipartFile file,
-                                                       @RequestPart String movieDtoObj) throws IOException {
-        if (file == null || file.isEmpty()) file = null;
+                                                       @RequestBody String movieDtoObj) throws IOException {
         MovieDTO movieDto = convertToMovieDto(movieDtoObj);
-        return ResponseEntity.ok(movieService.updateMovie(movieId, movieDto, file));
+        return ResponseEntity.ok(movieService.updateMovie(movieId, movieDto));
     }
 
     @DeleteMapping("/delete/{movieId}")

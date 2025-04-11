@@ -31,8 +31,6 @@ public class MovieDTO {
     @NotBlank(message = "Please provide movie's poster!")
     private String poster;
 
-    @NotBlank(message = "Please provide poster's url!")
-    private String posterUrl;
     @Column(nullable = false)
     @NotBlank(message = "Please provide movie's video URL!")
     private String videoUrl;
