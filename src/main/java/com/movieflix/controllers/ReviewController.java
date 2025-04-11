@@ -14,13 +14,11 @@ import java.util.List;
 public class ReviewController {
     @Autowired
     private ReviewService reviewService;
-    @PreAuthorize("hasAuthority('USER')")
     @PostMapping
     public ResponseEntity<ReviewDTO> addReview(@RequestBody ReviewDTO reviewDTO) {
         ReviewDTO savedReview = reviewService.addReview(reviewDTO);
         return ResponseEntity.ok(savedReview);
     }
-    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<ReviewDTO>> getReviewsByMovieId(@PathVariable Integer movieId) {
         List<ReviewDTO> reviews = reviewService.getReviewsByMovieId(movieId);
