@@ -49,4 +49,10 @@ public class Movie {
 
     @Column(nullable = false)
     private Integer duration; // in seconds
+
+    private String genre;
+
+    private Double rating;
+
+    private String description;
 }

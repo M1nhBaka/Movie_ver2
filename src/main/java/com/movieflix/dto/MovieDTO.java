@@ -31,10 +31,16 @@ public class MovieDTO {
     @NotBlank(message = "Please provide movie's poster!")
     private String poster;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "video_url")
     @NotBlank(message = "Please provide movie's video URL!")
     private String videoUrl;
 
     @Column(nullable = false)
     private Integer duration; // in seconds
+
+    private String genre;
+
+    private Double rating;
+
+    private String description;
 }

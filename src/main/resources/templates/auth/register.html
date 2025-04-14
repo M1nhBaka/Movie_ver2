@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - MovieFlix</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .register-container {
+            max-width: 28rem;
+            width: 100%;
+        }
+        .register-card {
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .form-input {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            color: white;
+        }
+        .form-input:focus {
+            background-color: #1f2937;
+            border-color: #f43f5e;
+            box-shadow: 0 0 0 0.25rem rgba(244, 63, 94, 0.25);
+            color: white;
+        }
+        .btn-primary {
+            background-color: #f43f5e;
+            border-color: #f43f5e;
+        }
+        .btn-primary:hover {
+            background-color: #e11d48;
+            border-color: #e11d48;
+        }
+        .footer {
+            background-color: #1f2937;
+            margin-top: auto;
+        }
+        .text-red-400 {
+            color: #f87171;
+        }
+        .text-red-400:hover {
+            color: #ef4444;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gray-800 shadow-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand text-xl font-bold text-red-500 hover:text-red-400" th:href="@{/}">MovieFlix</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/home}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movie/all}">Movies</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/auth/login}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/auth/register}">Register</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="register-container">
+        <div class="register-card p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold">Create an Account</h2>
+                <p class="text-gray-400 mt-2">Join MovieFlix to enjoy unlimited movies</p>
+            </div>
+
+            <form th:action="@{/auth/register}" method="post" th:object="${registerRequest}">
+                <div th:if="${#fields.hasErrors('*')}" class="mb-4 p-3 bg-red-900 bg-opacity-30 text-red-300 rounded">
+                    <div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-300 mb-2">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-input w-full px-4 py-2 rounded focus:outline-none" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-300 mb-2">Email</label>
+                    <input type="email" id="email" name="email" class="form-input w-full px-4 py-2 rounded focus:outline-none" required>
+                </div>
+
+                <div class="mb-4 relative">
+                    <label for="password" class="block text-gray-300 mb-2">Password</label>
+                    <input type="password" id="password" name="password" class="form-input w-full px-4 py-2 rounded focus:outline-none" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
+                </div>
+
+                <div class="mb-6 relative">
+                    <label for="confirmPassword" class="block text-gray-300 mb-2">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input w-full px-4 py-2 rounded focus:outline-none" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmPassword')"></i>
+                </div>
+
+                <button type="submit" class="btn-primary w-full text-white py-2 px-4 rounded font-medium transition duration-300">
+                    Register
+                </button>
+
+                <div class="mt-4 text-center">
+                    <p class="text-gray-400">Already have an account? <a th:href="@{/auth/login}" class="text-red-400 hover:text-red-300">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer py-8">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between">
+            <div class="mb-6 md:mb-0">
+                <h2 class="text-xl font-bold text-red-500 mb-4">MovieFlix</h2>
+                <p class="text-gray-400">Your ultimate movie streaming platform.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Movies</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2023 MovieFlix. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script>
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = field.nextElementSibling;
+        if (field.type === "password") {
+            field.type = "text";
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = "password";
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
+</body>
+</html>

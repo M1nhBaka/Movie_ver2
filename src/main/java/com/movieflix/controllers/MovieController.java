@@ -9,15 +9,16 @@ import com.movieflix.service.MovieService;
 import com.movieflix.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/movie")
+@Controller
+@RequestMapping("/movie")
 @CrossOrigin(origins = "*")
 public class MovieController {
 
@@ -27,11 +28,18 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @PostMapping("/add-movie")
-    public ResponseEntity<MovieDTO> addMovieHandler(@RequestBody String movieDto) throws IOException, EmptyFileException {
+    @GetMapping("/add")
+    public String showAddMoviePage(Model model) {
+        model.addAttribute("movie", new MovieDTO());
+        return "movies/admin";
+    }
 
-        MovieDTO dto = convertToMovieDto(movieDto);
-        return new ResponseEntity<>(movieService.addMovie(dto), HttpStatus.CREATED);
+    @PostMapping("/add")
+    public String addMovieHandler(@ModelAttribute MovieDTO movieDto, Model model) throws IOException, EmptyFileException {
+        MovieDTO savedMovie = movieService.addMovie(movieDto);
+        model.addAttribute("movie", savedMovie);
+        model.addAttribute("message", "Movie added successfully");
+        return "movies/admin";
     }
 
     @GetMapping("/{movieId}")
@@ -44,16 +52,27 @@ public class MovieController {
         return ResponseEntity.ok(movieService.getAllMovies());
     }
 
-    @PutMapping("/update/{movieId}")
-    public ResponseEntity<MovieDTO> updateMovieHandler(@PathVariable Integer movieId,
-                                                       @RequestBody String movieDtoObj) throws IOException {
-        MovieDTO movieDto = convertToMovieDto(movieDtoObj);
-        return ResponseEntity.ok(movieService.updateMovie(movieId, movieDto));
+    @GetMapping("/edit/{movieId}")
+    public String showEditMoviePage(@PathVariable Integer movieId, Model model) {
+        MovieDTO movie = movieService.getMovie(movieId);
+        model.addAttribute("movie", movie);
+        return "movies/edit";
     }
 
-    @DeleteMapping("/delete/{movieId}")
-    public ResponseEntity<String> deleteMovieHandler(@PathVariable Integer movieId) throws IOException {
-        return ResponseEntity.ok(movieService.deleteMovie(movieId));
+    @PostMapping("/update/{movieId}")
+    public String updateMovieHandler(@PathVariable Integer movieId, 
+                                   @ModelAttribute MovieDTO movieDto, 
+                                   Model model) throws IOException {
+        movieService.updateMovie(movieId, movieDto);
+        model.addAttribute("message", "Movie updated successfully");
+        return "movies/edit";
+    }
+
+    @PostMapping("/delete/{movieId}")
+    public String deleteMovieHandler(@PathVariable Integer movieId, Model model) throws IOException {
+        movieService.deleteMovie(movieId);
+        model.addAttribute("message", "Movie deleted successfully");
+        return "redirect:/movie/all";
     }
 
     @GetMapping("/allMoviesPage")
@@ -72,10 +91,5 @@ public class MovieController {
             @RequestParam(defaultValue = AppConstants.SORT_DIR, required = false) String dir
     ) {
         return ResponseEntity.ok(movieService.getAllMoviesWithPaginationAndSorting(pageNumber, pageSize, sortBy, dir));
-    }
-
-    private MovieDTO convertToMovieDto(String movieDtoObj) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(movieDtoObj, MovieDTO.class);
     }
 }

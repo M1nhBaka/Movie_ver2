@@ -1,53 +1,73 @@
 package com.movieflix.controllers;
 
-import com.movieflix.auth.entities.RefreshToken;
 import com.movieflix.auth.entities.User;
 import com.movieflix.auth.services.AuthService;
-import com.movieflix.auth.services.JwtService;
-import com.movieflix.auth.services.RefreshTokenService;
-import com.movieflix.auth.utils.AuthResponse;
 import com.movieflix.auth.utils.LoginRequest;
-import com.movieflix.auth.utils.RefreshTokenRequest;
 import com.movieflix.auth.utils.RegisterRequest;
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/v1/auth/")
-@CrossOrigin(origins = "*")
+@Controller
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
-    private final JwtService jwtService;
 
-    public AuthController(AuthService authService, RefreshTokenService refreshTokenService, JwtService jwtService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.refreshTokenService = refreshTokenService;
-        this.jwtService = jwtService;
+    }
+
+    @GetMapping("/register")
+    public String showRegisterPage(Model model) {
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "auth/register";
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authService.register(registerRequest));
+    public String register(@ModelAttribute RegisterRequest registerRequest, Model model) {
+        try {
+            authService.register(registerRequest);
+            model.addAttribute("message", "User registered successfully");
+            return "redirect:/auth/login";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "auth/register";
+        }
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "auth/login";
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+    public String login(@ModelAttribute LoginRequest loginRequest, Model model) {
+        try {
+            authService.login(loginRequest);
+            return "redirect:/home";
+        } catch (Exception e) {
+            model.addAttribute("error", "Invalid username or password");
+            return "auth/login";
+        }
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/auth/login";
+    }
 
-        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenRequest.getRefreshToken());
-        User user = refreshToken.getUser();
-
-        String accessToken = jwtService.generateToken(user);
-
-        return ResponseEntity.ok(AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build());
+    @GetMapping("/current-user")
+    @ResponseBody
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return (User) authentication.getPrincipal();
+        }
+        return null;
     }
 }

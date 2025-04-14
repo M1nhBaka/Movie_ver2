@@ -40,7 +40,10 @@ public class MovieServiceImpl implements MovieService {
                 movieDto.getReleaseYear(),
                 movieDto.getPoster(),
                 movieDto.getVideoUrl(),
-                movieDto.getDuration()
+                movieDto.getDuration(),
+                movieDto.getGenre(),
+                movieDto.getRating(),
+                movieDto.getDescription()
         );
 
         // 4. save the movie object -> saved Movie object
@@ -57,7 +60,10 @@ public class MovieServiceImpl implements MovieService {
                 savedMovie.getReleaseYear(),
                 savedMovie.getPoster(),
                 savedMovie.getVideoUrl(),
-                savedMovie.getDuration()
+                savedMovie.getDuration(),
+                savedMovie.getGenre(),
+                savedMovie.getRating(),
+                savedMovie.getDescription()
         );
 
         return response;
@@ -69,8 +75,6 @@ public class MovieServiceImpl implements MovieService {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id = " + movieId));
 
-
-
         // 3. map to MovieDto object and return it
         MovieDTO response = new MovieDTO(
                 movie.getMovieId(),
@@ -81,7 +85,10 @@ public class MovieServiceImpl implements MovieService {
                 movie.getReleaseYear(),
                 movie.getPoster(),
                 movie.getVideoUrl(),
-                movie.getDuration()
+                movie.getDuration(),
+                movie.getGenre(),
+                movie.getRating(),
+                movie.getDescription()
         );
 
         return response;
@@ -107,7 +114,10 @@ public class MovieServiceImpl implements MovieService {
                     movie.getReleaseYear(),
                     movie.getPoster(),
                     movie.getVideoUrl(),
-                    movie.getDuration()
+                    movie.getDuration(),
+                    movie.getGenre(),
+                    movie.getRating(),
+                    movie.getDescription()
             );
             movieDtos.add(movieDto);
         }
@@ -116,7 +126,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public MovieDTO updateMovie(Integer movieId, MovieDTO movieDto) throws IOException {
+    public void updateMovie(Integer movieId, MovieDTO movieDto) throws IOException {
         // 1. check if movie object exists with given movieId
         Movie mv = movieRepository.findById(movieId)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id = " + movieId));
@@ -136,26 +146,29 @@ public class MovieServiceImpl implements MovieService {
                 movieDto.getReleaseYear(),
                 movieDto.getPoster(),
                 movieDto.getVideoUrl(),
-                movieDto.getDuration()
+                movieDto.getDuration(),
+                movieDto.getGenre(),
+                movieDto.getRating(),
+                movieDto.getDescription()
         );
 
         // 5. save the movie object -> return saved movie object
         Movie updatedMovie = movieRepository.save(movie);
 
         // 7. map to MovieDto and return it
-        MovieDTO response = new MovieDTO(
-                movie.getMovieId(),
-                movie.getTitle(),
-                movie.getDirector(),
-                movie.getStudio(),
-                movie.getMovieCast(),
-                movie.getReleaseYear(),
-                movie.getPoster(),
-                movie.getVideoUrl(),
-                movie.getDuration()
-        );
+//        MovieDTO response = new MovieDTO(
+//                movie.getMovieId(),
+//                movie.getTitle(),
+//                movie.getDirector(),
+//                movie.getStudio(),
+//                movie.getMovieCast(),
+//                movie.getReleaseYear(),
+//                movie.getPoster(),
+//                movie.getVideoUrl(),
+//                movie.getDuration()
+//        );
 
-        return response;
+
     }
 
     @Override
@@ -192,7 +205,10 @@ public class MovieServiceImpl implements MovieService {
                     movie.getReleaseYear(),
                     movie.getPoster(),
                     movie.getVideoUrl(),
-                    movie.getDuration()
+                    movie.getDuration(),
+                    movie.getGenre(),
+                    movie.getRating(),
+                    movie.getDescription()
             );
             movieDtos.add(movieDto);
         }
@@ -228,9 +244,11 @@ public class MovieServiceImpl implements MovieService {
                     movie.getMovieCast(),
                     movie.getReleaseYear(),
                     movie.getPoster(),
-
                     movie.getVideoUrl(),
-                    movie.getDuration()
+                    movie.getDuration(),
+                    movie.getGenre(),
+                    movie.getRating(),
+                    movie.getDescription()
             );
             movieDtos.add(movieDto);
         }

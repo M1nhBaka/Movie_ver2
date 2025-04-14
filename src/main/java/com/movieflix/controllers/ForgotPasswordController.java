@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -18,7 +20,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
 
-@RestController
+@Controller
 @RequestMapping("/forgotPassword")
 @CrossOrigin(origins = "*")
 public class ForgotPasswordController {
@@ -37,10 +39,10 @@ public class ForgotPasswordController {
         this.passwordEncoder = passwordEncoder;
     }
 
-
+    @GetMapping("/verifyMail")
     // send mail for email verification
     @PostMapping("/verifyMail/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable String email) {
+    public String verifyEmail(@PathVariable String email, Model model) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Please provide an valid email!" + email));
 
@@ -59,8 +61,8 @@ public class ForgotPasswordController {
 
         emailService.sendSimpleMessage(mailBody);
         forgotPasswordRepository.save(fp);
-
-        return ResponseEntity.ok("Email sent for verification!");
+        model.addAttribute("message", "Email sent for verification!");
+        return "auth/register";
     }
 
     @PostMapping("/verifyOtp/{otp}/{email}")

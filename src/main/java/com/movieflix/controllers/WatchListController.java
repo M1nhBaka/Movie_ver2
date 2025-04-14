@@ -5,12 +5,13 @@ import com.movieflix.service.WatchListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/watchlist")
+@Controller
+@RequestMapping("/watchlist")
 public class WatchListController {
     @Autowired
     private WatchListService watchListService;

@@ -1,21 +1,26 @@
 package com.movieflix.controllers;
 
+import com.movieflix.dto.MovieDTO;
+import com.movieflix.service.MovieService;
 import com.movieflix.service.VideoStreamingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-@RestController
-@RequestMapping("/api/v1/video")
+@Controller
+@RequestMapping("/video")
 public class VideoStreamingController {
     @Autowired
     private VideoStreamingService videoStreamingService;
-
+    @Autowired
+    private MovieService movieService;
     @GetMapping("/stream/{movieId}")
-    public ResponseEntity<Resource> streamVideo(
-            @PathVariable Integer movieId) {
-        return videoStreamingService.streamVideo(movieId);
+    public String streamVideo(
+            @PathVariable Integer movieId, Model model) {
+        MovieDTO movie = movieService.getMovie(movieId);
+
+        model.addAttribute("movie", movie);
+        return "video/stream";
     }
 } 
