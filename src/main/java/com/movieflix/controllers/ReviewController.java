@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +17,14 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
     @PostMapping
-    public ResponseEntity<ReviewDTO> addReview(@RequestBody ReviewDTO reviewDTO) {
+    public String addReview(@ModelAttribute ReviewDTO reviewDTO, Model model) {
         ReviewDTO savedReview = reviewService.addReview(reviewDTO);
-        return ResponseEntity.ok(savedReview);
+        model.addAttribute("review", savedReview);
+        return "movies/detail";
     }
     @GetMapping("/movie/{movieId}")
-    public ResponseEntity<List<ReviewDTO>> getReviewsByMovieId(@PathVariable Integer movieId) {
+    public String getReviewsByMovieId(@PathVariable Integer movieId) {
         List<ReviewDTO> reviews = reviewService.getReviewsByMovieId(movieId);
-        return ResponseEntity.ok(reviews);
+        return "#";
     }
 } 

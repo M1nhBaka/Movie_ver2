@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+  lang="en"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Movie - MovieFlix</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #111827;
+        color: white;
+      }
+      .navbar {
+        background-color: #1f2937;
+      }
+      .nav-link {
+        color: #e5e7eb;
+        transition: color 0.3s;
+      }
+      .nav-link:hover {
+        color: #f43f5e;
+      }
+      .dropdown-menu {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+      }
+      .dropdown-item {
+        color: #e5e7eb;
+      }
+      .dropdown-item:hover {
+        background-color: #374151;
+        color: #ffffff;
+      }
+      footer {
+        background-color: #1f2937;
+      }
+      .admin-table {
+        background-color: #1f2937;
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+      .admin-table th {
+        background-color: #111827;
+        color: #f43f5e;
+        padding: 1rem;
+        text-align: left;
+      }
+      .admin-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #374151;
+      }
+      .admin-table tr:last-child td {
+        border-bottom: none;
+      }
+      .admin-table tr:hover td {
+        background-color: #374151;
+      }
+      .action-btn {
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        transition: all 0.3s;
+      }
+      .action-btn:hover {
+        transform: scale(1.1);
+      }
+      .view-btn {
+        color: #3b82f6;
+      }
+      .edit-btn {
+        color: #f59e0b;
+      }
+      .delete-btn {
+        color: #ef4444;
+      }
+      .modal-content {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+      }
+      .modal-header {
+        border-bottom: 1px solid #374151;
+      }
+      .modal-footer {
+        border-top: 1px solid #374151;
+      }
+      .form-input {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+        color: white;
+      }
+      .form-input:focus {
+        background-color: #1f2937;
+        border-color: #f43f5e;
+        box-shadow: 0 0 0 0.25rem rgba(244, 63, 94, 0.25);
+        color: white;
+      }
+      .btn-primary {
+        background-color: #f43f5e;
+        border-color: #f43f5e;
+      }
+      .btn-primary:hover {
+        background-color: #e11d48;
+        border-color: #e11d48;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1f2937;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #4b5563;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-lg sticky-top">
+      <div class="container-fluid">
+        <a
+          class="navbar-brand text-xl font-bold text-red-500 hover:text-red-400"
+          th:href="@{/}"
+          >MovieFlix</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/home}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/movie/all}">Movies</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+              <a
+                class="nav-link"
+                th:href="@{/watchlist/user/{username}(username=${#authentication.principal.username})}"
+                >My Watchlist</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" th:href="@{/admin/movies}">Admin</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fas fa-user-circle me-1"></i>
+                <span sec:authentication="name"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item text-white" href="#">Profile</a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item text-white"
+                    th:href="@{/forgotPassword}"
+                    >Change Password</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider bg-gray-600" /></li>
+                <li>
+                  <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="dropdown-item text-white">
+                      Logout
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Edit Movie</h1>
+        <a
+          th:href="@{/admin/movies}"
+          class="btn-primary text-white py-2 px-4 rounded-lg font-medium"
+        >
+          <i class="fas fa-arrow-left mr-2"></i> Back to Movies
+        </a>
+      </div>
+
+      <!-- Edit Movie Form -->
+      <div class="bg-gray-800 rounded-lg p-8">
+        <form
+          th:action="@{/movie/update/{id}(id=${movie.movieId})}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-gray-300 mb-2">Title</label>
+              <input
+                type="text"
+                name="title"
+                th:value="${movie.title}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Genre</label>
+              <input
+                type="text"
+                name="genre"
+                th:value="${movie.genre}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Release Year</label>
+              <input
+                type="number"
+                name="releaseYear"
+                th:value="${movie.releaseYear}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Duration (minutes)</label>
+              <input
+                type="number"
+                name="duration"
+                th:value="${movie.duration}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Director</label>
+              <input
+                type="text"
+                name="director"
+                th:value="${movie.director}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Studio</label>
+              <input
+                type="text"
+                name="studio"
+                th:value="${movie.studio}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Movie Cast</label>
+              <input
+                type="text"
+                name="movieCast"
+                th:value="${movie.movieCast}"
+                class="form-input w-full px-4 py-2 rounded"
+                placeholder="Enter cast members separated by commas"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Rating</label>
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="10"
+                name="rating"
+                th:value="${movie.reviews}"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+              />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-gray-300 mb-2">Description</label>
+              <textarea
+                name="description"
+                rows="3"
+                class="form-input w-full px-4 py-2 rounded"
+                required
+                th:text="${movie.description}"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Poster Image</label>
+              <input
+                type="text"
+                name="poster"
+                class="form-input w-full px-4 py-2 rounded"
+                th:value="${movie.poster}"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">VideoURL</label>
+              <input
+                type="text"
+                name="videoUrl"
+                class="form-input w-full px-4 py-2 rounded"
+                th:value="${movie.videoUrl}"
+              />
+            </div>
+          </div>
+
+          <div class="mt-8 flex justify-end space-x-4">
+            <a
+              th:href="@{/admin/movies}"
+              class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
+            >
+              Cancel
+            </a>
+            <button
+              type="submit"
+              class="px-6 py-2 btn-primary text-white rounded-lg"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-8">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between">
+          <div class="mb-6 md:mb-0">
+            <h2 class="text-xl font-bold text-red-500 mb-4">MovieFlix</h2>
+            <p class="text-gray-400">Your ultimate movie streaming platform.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul class="space-y-2">
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white">Home</a>
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white">Movies</a>
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white">Contact</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-4">Legal</h3>
+              <ul class="space-y-2">
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Privacy Policy</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Terms of Service</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Cookie Policy</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"
+        >
+          <p>&copy; 2023 MovieFlix. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

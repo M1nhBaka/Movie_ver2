@@ -1,10 +1,12 @@
-package com.movieflix.service;
+package com.movieflix.service.impl;
 
 import com.movieflix.dto.MovieDTO;
 import com.movieflix.dto.MoviePageResponse;
 import com.movieflix.entities.Movie;
 import com.movieflix.exceptions.MovieNotFoundException;
+import com.movieflix.exceptions.ResourceNotFoundException;
 import com.movieflix.repositories.MovieRepository;
+import com.movieflix.service.MovieService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +28,6 @@ public class MovieServiceImpl implements MovieService {
     public MovieServiceImpl(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-
     @Override
     public MovieDTO addMovie(MovieDTO movieDto) throws IOException {
 
@@ -42,7 +43,7 @@ public class MovieServiceImpl implements MovieService {
                 movieDto.getVideoUrl(),
                 movieDto.getDuration(),
                 movieDto.getGenre(),
-                movieDto.getRating(),
+                movieDto.getReviews(),
                 movieDto.getDescription()
         );
 
@@ -62,10 +63,30 @@ public class MovieServiceImpl implements MovieService {
                 savedMovie.getVideoUrl(),
                 savedMovie.getDuration(),
                 savedMovie.getGenre(),
-                savedMovie.getRating(),
+                savedMovie.getReviews(),
                 savedMovie.getDescription()
         );
 
+        return response;
+    }
+
+    public MovieDTO getMovieByName(String title) {
+        Movie movie = movieRepository.findByTitle(title);
+        if(movie == null) throw new ResourceNotFoundException("Movie not found");
+        MovieDTO response = new MovieDTO(
+                movie.getMovieId(),
+                movie.getTitle(),
+                movie.getDirector(),
+                movie.getStudio(),
+                movie.getMovieCast(),
+                movie.getReleaseYear(),
+                movie.getPoster(),
+                movie.getVideoUrl(),
+                movie.getDuration(),
+                movie.getGenre(),
+                movie.getReviews(),
+                movie.getDescription()
+        );
         return response;
     }
 
@@ -87,7 +108,7 @@ public class MovieServiceImpl implements MovieService {
                 movie.getVideoUrl(),
                 movie.getDuration(),
                 movie.getGenre(),
-                movie.getRating(),
+                movie.getReviews(),
                 movie.getDescription()
         );
 
@@ -116,7 +137,7 @@ public class MovieServiceImpl implements MovieService {
                     movie.getVideoUrl(),
                     movie.getDuration(),
                     movie.getGenre(),
-                    movie.getRating(),
+                    movie.getReviews(),
                     movie.getDescription()
             );
             movieDtos.add(movieDto);
@@ -148,7 +169,7 @@ public class MovieServiceImpl implements MovieService {
                 movieDto.getVideoUrl(),
                 movieDto.getDuration(),
                 movieDto.getGenre(),
-                movieDto.getRating(),
+                movieDto.getReviews(),
                 movieDto.getDescription()
         );
 
@@ -207,7 +228,7 @@ public class MovieServiceImpl implements MovieService {
                     movie.getVideoUrl(),
                     movie.getDuration(),
                     movie.getGenre(),
-                    movie.getRating(),
+                    movie.getReviews(),
                     movie.getDescription()
             );
             movieDtos.add(movieDto);
@@ -247,7 +268,7 @@ public class MovieServiceImpl implements MovieService {
                     movie.getVideoUrl(),
                     movie.getDuration(),
                     movie.getGenre(),
-                    movie.getRating(),
+                    movie.getReviews(),
                     movie.getDescription()
             );
             movieDtos.add(movieDto);

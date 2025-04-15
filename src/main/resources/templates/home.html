@@ -113,8 +113,8 @@
                 >My Watchlist</a
               >
             </li>
-            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-              <a class="nav-link" th:href="@{/admin/movies}">Admin</a>
+            <li class="nav-item"  sec:authorize="hasAuthority('ADMIN')">
+              <a class="nav-link" th:href="@{/movie/show} ">Admin</a>
             </li>
           </ul>
           <ul class="navbar-nav">
@@ -184,7 +184,7 @@
           </h1>
           <p class="text-xl mb-8">Watch anywhere. Cancel anytime.</p>
           <a
-            href="#"
+            th:href="@{/auth/login}"
             class="bg-red-600 hover:bg-red-700 text-white py-3 px-8 rounded-lg text-lg font-semibold transition duration-300"
             >Get Started</a
           >
@@ -204,15 +204,13 @@
               alt="Movie Poster"
               class="w-full h-64 object-cover transition duration-300 group-hover:opacity-50"
             />
-            <div
-              class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
-            >
+
               <a
-                th:href="@{/movie/{id}(id=${movie.getMovieId()})}"
+                th:href="@{/video/stream/{id}(id=${movie.movieId})}"
                 class="bg-red-600 text-white py-2 px-4 rounded-lg font-medium"
                 >View Details</a
               >
-            </div>
+
             <div class="p-4 bg-gray-800">
               <h3 class="font-semibold truncate" th:text="${movie.title}"></h3>
               <div class="flex justify-between items-center mt-2">
@@ -243,7 +241,7 @@
               class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
             >
               <a
-                th:href="@{/movie/{id}(id=${movie.getMovieId()})}"
+                th:href="@{/video/stream/{id}(id=${movie.getMovieId()})}"
                 class="bg-red-600 text-white py-2 px-4 rounded-lg font-medium"
                 >View Details</a
               >

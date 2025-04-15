@@ -266,11 +266,11 @@
         <h2 class="text-xl font-bold mb-4">Similar Movies</h2>
         <div class="space-y-4">
           <div th:each="similar : ${similarMovies}" class="flex similar-movie p-2 rounded-lg">
-            <a th:href="@{/api/v1/movie/{id}(id=${similar.id})}" class="w-16 h-24 flex-shrink-0 rounded overflow-hidden">
+            <a th:href="@{/movie/{id}(id=${similar.id})}" class="w-16 h-24 flex-shrink-0 rounded overflow-hidden">
               <img th:src="${similar.posterUrl}" alt="Movie" class="w-full h-full object-cover">
             </a>
             <div class="ml-3">
-              <a th:href="@{/api/v1/movie/{id}(id=${similar.id})}" class="font-medium hover:text-red-400" th:text="${similar.title}"></a>
+              <a th:href="@{/movie/{id}(id=${similar.id})}" class="font-medium hover:text-red-400" th:text="${similar.title}"></a>
               <div class="flex items-center mt-1">
                                     <span class="text-yellow-400 mr-2">
                                         <i class="fas fa-star text-xs"></i> <span th:text="${similar.rating}"></span>

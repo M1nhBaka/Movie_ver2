@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -52,7 +53,9 @@ public class Movie {
 
     private String genre;
 
-    private Double rating;
+    @Column(nullable = false)
+    @OneToMany(mappedBy = "content")
+    private List<Review> reviews;
 
     private String description;
 }

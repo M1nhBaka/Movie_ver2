@@ -1,9 +1,11 @@
 package com.movieflix.dto;
 
+import com.movieflix.entities.Review;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -31,7 +33,7 @@ public class MovieDTO {
     @NotBlank(message = "Please provide movie's poster!")
     private String poster;
 
-    @Column(nullable = false, name = "video_url")
+    @Column(nullable = false)
     @NotBlank(message = "Please provide movie's video URL!")
     private String videoUrl;
 
@@ -40,7 +42,7 @@ public class MovieDTO {
 
     private String genre;
 
-    private Double rating;
+    private List<Review> reviews;
 
     private String description;
 }

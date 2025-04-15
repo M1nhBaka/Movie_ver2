@@ -23,4 +23,6 @@ public interface MovieService {
 
     MoviePageResponse getAllMoviesWithPaginationAndSorting(Integer pageNumber, Integer pageSize,
                                                            String sortBy, String dir);
+    MovieDTO getMovieByName(String title) ;
+
 }
