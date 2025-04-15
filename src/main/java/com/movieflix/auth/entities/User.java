@@ -30,9 +30,6 @@ public class User implements UserDetails {
     @NotBlank(message = "The name field can't be blank")
     private String name;
 
-    @NotBlank(message = "The username field can't be blank")
-    @Column(unique = true)
-    private String username;
 
     @NotBlank(message = "The email field can't be blank")
     @Column(unique = true)
